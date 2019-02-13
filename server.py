@@ -11,7 +11,11 @@ CORS(app, supports_credentials=True)
 
 @app.route("/status")
 def status():
-    re = Service.all_status()
+    module = request.args.get('module')
+    if module:
+        re = Service.lmstatByModule(module)
+    else:
+        re = Service.lmstatAll()
     return json.dumps(re)
 
 @app.route("/matlab")

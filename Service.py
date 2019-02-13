@@ -12,8 +12,11 @@ cmd = Command()
 
 #testdata = Util.testdata()
 
-def all_status():
-    return cmd.all_status()
+def lmstatAll():
+    return cmd.lmstatAll()
+
+def lmstatByModule(module):
+    return cmd.lmstatByModule(module)
 
 def thread_to_save_data():
     while(True):
