@@ -9,19 +9,18 @@ modules = Util.modules()
 
 minute_interval = 1
 cmd = Command()
-BLANK = '\r\n'
 
-testdata = Util.testdata()
+#testdata = Util.testdata()
 
-def status():
-    return cmd.status()
+def all_status():
+    return cmd.all_status()
 
 def thread_to_save_data():
     while(True):
         now_time = Util.get_time()
         now_date = Util.get_date()
-        data = Util.testdata()
-        #data = cmd_status()
+        #data = Util.testdata()
+        data = cmd_status()
 
         matlab_data = data["MATLAB"] 
         matlab = Dao.Matlab(date=now_date,time=now_time,\

@@ -11,7 +11,7 @@ CORS(app, supports_credentials=True)
 
 @app.route("/status")
 def status():
-    re = Service.cmd_status()
+    re = Service.all_status()
     return json.dumps(re)
 
 @app.route("/matlab")
