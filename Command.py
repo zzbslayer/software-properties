@@ -12,7 +12,7 @@ class Command(object):
             self.path = path
 
         LM_LICENSE_FILE = os.environ.get('LM_LICENSE_FILE')
-        prefix = ""
+        prefix = "\"" + self.path + "\lmutil.exe\" "
 
         assert(LM_LICENSE_FILE != "")
         #LM_LICENSE_FILE = "C:\Program Files\MATLAB\R2018a\etc\license.dat"
@@ -21,7 +21,7 @@ class Command(object):
                         "lmstatAll":  lambda: prefix + "lmstat -a", \
                         "lmstatByModule": lambda module: (prefix + "lmstat -f " + module), \
                         "lmremoveByDevice": lambda feature,user,user_host,display:(prefix+"lmremove "+feature+" "+user+" "+user_host+" "+display), \
-                        "lmremoveByPort": lambda feature, server_host, port, handle:(prefix+"lmremove "+feature+" "+server_host+" "+port+" "+" "handle), \
+                        "lmremoveByPort": lambda feature, server_host, port, handle:(prefix+"lmremove "+feature+" "+server_host+" "+port+" "+" "+handle), \
                         "others": "dir"
                     }
         
@@ -29,7 +29,7 @@ class Command(object):
         return self.command_dic[key]
 
     def lmstatByModule(self, module):
-        pipe = Popen(self._command("lmstatByModule")(module) + module, shell=True, stdout=PIPE, stderr=PIPE)
+        pipe = Popen(self._command("lmstatByModule")(module), shell=True, stdout=PIPE, stderr=PIPE)
         result = {}
         while True:
             line = Util.readline(pipe)
@@ -143,5 +143,5 @@ class Command(object):
 
 if __name__ == "__main__":
     cmd = Command()
-    print(cmd.status_by_module("SIMULINK"))
-    print(cmd.all_status()["SIMULINK"])
+    print(cmd.lmstatByModule("SIMULINK"))
+    print(cmd.lmstatAll()["SIMULINK"])
