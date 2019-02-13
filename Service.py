@@ -1,4 +1,3 @@
-from subprocess import Popen, PIPE
 import os
 from Command import Command
 import Util
@@ -14,62 +13,8 @@ BLANK = '\r\n'
 
 testdata = Util.testdata()
 
-''' example
-{
-    'MATLAB':{
-        total: 10000,
-        use: 100,
-        metadata: [whatever]
-        user_data: [user1, user2, ...]
-    },
-    'Some Module':{
-        ...
-    },
-    ...
-}
-'''
-def cmd_status():
-    pipe = Popen(cmd.status(), shell=True, stdout=PIPE, stderr=PIPE)
-    result = {}
-    while True:
-        line = Util.readline(pipe)
-        if line == -1: 
-            break 
-        elif (line == BLANK):
-            continue
-
-        # get some module
-        if (line[:9] == "Users of "):
-            split_line = line.split(' ')
-            module = split_line[2][:-1]
-            total = split_line[6]
-            use = split_line[12]
-            result[module] = {"total":total, "use":use}
-
-            # read meta data of some module
-            metadata = []
-            for i in range(4):
-                line = Util.readline(pipe)
-                if line == BLANK:
-                    continue
-                metadata.append(line[2:])
-            result[module]["metadata"] = metadata
-
-            line = Util.readline(pipe)
-            if line == -1:
-                break
-
-            # read user data of some module
-            user_data = []
-            while(line[:9] != "Users of "):
-                line = Util.readline(pipe)
-                if line == -1:
-                    break
-                if line == BLANK:
-                    continue
-                user_data.append(line[4:])
-            result[module]["user_data"] = user_data
-    return result
+def status():
+    return cmd.status()
 
 def thread_to_save_data():
     while(True):
