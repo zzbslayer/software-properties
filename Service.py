@@ -5,8 +5,6 @@ import json
 import Dao
 import time
 
-modules = Util.modules()
-
 minute_interval = 1
 cmd = Command()
 
@@ -23,7 +21,7 @@ def thread_to_save_data():
         now_time = Util.get_time()
         now_date = Util.get_date()
         #data = Util.testdata()
-        data = cmd_status()
+        data = cmd.lmstatAll()
 
         matlab_data = data["MATLAB"] 
         matlab = Dao.Matlab(date=now_date,time=now_time,\
@@ -155,7 +153,7 @@ def thread_to_save_data():
         time.sleep(minute_interval*60)
 
 def _main():
-    print(cmd_status())
+    print(cmd.lmstatAll())
 
 if __name__=="__main__":
     _main()

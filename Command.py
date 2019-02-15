@@ -3,6 +3,29 @@ import os
 import Util
 
 BLANK = '\r\n'
+SERVER_HOST = "matlab2018b"
+
+def get_user_data(raw_user_data):
+    user_data = []
+    for i in raw_user_data:
+        split_user_data = i.split(' ')
+        for j in range(len(split_user_data)):
+            if (split_user_data[j].split('/')[0][1:] == SERVER_HOST):
+                break
+        server = split_user_data[j].split('/')
+        server_host = SERVER_HOST
+        port = server[1]
+        handle = split_user_data[j+1][:-2]
+        checkout_time = split_user_data[j+2] + ' ' + split_user_data[j+3] + ' ' + split_user_data[j+4] + ' ' + split_user_data[j+5][:-2]
+                    
+        one_user = { 
+            "server_host": server_host, \
+            "port": port, \
+            "handle": handle, \
+            "checkout_time": checkout_time
+            }
+        user_data.append(one_user)
+    return user_data
 
 class Command(object):
     def __init__(self, path=None):
@@ -65,15 +88,16 @@ class Command(object):
                         break
 
                     # read user data of some module
-                    user_data = []
+                    raw_user_data = []
                     while(True):
                         line = Util.readline(pipe)
                         if line == -1:
                             break
                         if line == BLANK:
                             break
-                        user_data.append(line[4:])
-
+                        raw_user_data.append(line[4:])
+                    user_data = get_user_data(raw_user_data)
+                        
                     result[module]["user_data"] = user_data
                 else:
                     result[module]["user_data"] = []
@@ -117,15 +141,16 @@ class Command(object):
                         break
 
                     # read user data of some module
-                    user_data = []
+                    raw_user_data = []
                     while(True):
                         line = Util.readline(pipe)
                         if line == -1:
                             break
                         if line == BLANK:
                             break
-                        user_data.append(line[4:])
+                        raw_user_data.append(line[4:])
 
+                    user_data = get_user_data(raw_user_data)
                     result[module]["user_data"] = user_data
                 else:
                     result[module]["user_data"] = []
@@ -144,4 +169,3 @@ class Command(object):
 if __name__ == "__main__":
     cmd = Command()
     print(cmd.lmstatByModule("SIMULINK"))
-    print(cmd.lmstatAll()["SIMULINK"])
