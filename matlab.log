@@ -1,0 +1,28 @@
+21:20:57 (lmgrd) -----------------------------------------------
+21:20:57 (lmgrd)   Please Note:
+21:20:57 (lmgrd) 
+21:20:57 (lmgrd)   This log is intended for debug purposes only.
+21:20:57 (lmgrd)   In order to capture accurate license
+21:20:57 (lmgrd)   usage data into an organized repository,
+21:20:57 (lmgrd)   please enable report logging. Use Flexera Software LLC's
+21:20:57 (lmgrd)   software license administration  solution,
+21:20:57 (lmgrd)   FlexNet Manager, to  readily gain visibility
+21:20:57 (lmgrd)   into license usage data and to create
+21:20:57 (lmgrd)   insightful reports on critical information like
+21:20:57 (lmgrd)   license availability and usage. FlexNet Manager
+21:20:57 (lmgrd)   can be fully automated to run these reports on
+21:20:57 (lmgrd)   schedule and can be used to track license
+21:20:57 (lmgrd)   servers and usage across a heterogeneous
+21:20:57 (lmgrd)   network of servers including Windows NT, Linux
+21:20:57 (lmgrd)   and UNIX.
+21:20:57 (lmgrd) 
+21:20:57 (lmgrd) -----------------------------------------------
+21:20:57 (lmgrd) 
+21:20:57 (lmgrd) 
+21:20:57 (lmgrd) Server's System Date and Time: Sun Mar 24 2019 21:20:57 中国标准时间
+21:20:57 (lmgrd) pid 4264
+21:20:57 (lmgrd) SLOG: Summary LOG statistics is enabled.
+21:20:57 (lmgrd) license manager: can't initialize:No SERVER lines in license file.
+21:20:57 (lmgrd) License Path: "C:\Program Files\MATLAB\R2018a\etc\license.lic"
+21:20:57 (lmgrd) FlexNet Licensing error:-13,66
+21:20:57 (lmgrd) Unable to kill lmgrd.exe. Please kill this manually by opening the Task manager and Killing the lmgrd.exe which are still running.

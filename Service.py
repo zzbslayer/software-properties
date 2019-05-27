@@ -5,33 +5,80 @@ import json
 import Dao
 import time
 
-minute_interval = 1
+minute_interval = 60
 cmd = Command()
 
 #testdata = Util.testdata()
 
-def lmstatAll():
-    return cmd.lmstatAll()
+status_dic = {}
 
-def lmstatByModule(module):
-    return cmd.lmstatByModule(module)
+def lmstatAll(sid):
+	server = Dao.Server.objects(id= sid)[0]
+	lic_file = server.lic
+	software = server.software
+
+	status, res = cmd.lmstatAll(lic_file, software)
+	status_dic[sid] = status
+	return res
+
+def lmstatByModule(sid, module):
+	server = Dao.Server.objects(id= sid)[0]
+	lic_file = server.lic
+	software = server.software
+
+	status, res = cmd.lmstatByModule(lic_file, module, software)
+	status_dic[sid] = status
+	return res
+
+def thread_to_check_server_status():
+	while(True):
+		servers = Dao.Server.objects()
+		for server in servers:
+			status = cmd.check(server.lic)
+			status_dic[server.id] = -1
+
+		time.sleep(minute_interval*15)
+		
+def get_status_by_id(sid):
+	return status_dic.get(sid)
+
 
 def thread_to_save_data():
-    while(True):
-        now_time = Util.get_time()
-        now_date = Util.get_date()
-        #data = Util.testdata()
-        data = cmd.lmstatAll()
+	while(True):
+		now_time = Util.get_time()
+		print("[Thread.save_data] Start: " + now_time)
+		servers = Dao.Server.objects()
+		for server in servers:
+			now_time = Util.get_time()
+			now_date = Util.get_date()
+			print("[Thread.save_data] " + now_date + " " + now_time + " " + server.lic)
+			status, data = cmd.lmstatAll(server.lic, server.software)
+			status_dic[server.id] = status
+			
+			if status == -1:
+				continue
+			if server.software == "matlab":
+				
+				matlab_data = data["MATLAB"]
+				res = Dao.Matlab(date=now_date,time=now_time,\
+							total=matlab_data["total"],\
+							use=matlab_data["use"],\
+							metadata=matlab_data["metadata"],\
+							user_data=matlab_data["user_data"]\
+							)
+				res.save()
+			if server.software == "solidworks":
+				solidworks_data = data["solidworks"]
+				res = Dao.Solidworks(date=now_date,time=now_time,\
+							total=solidworks_data["total"],\
+							use=solidworks_data["use"],\
+							metadata=solidworks_data["metadata"],\
+							user_data=solidworks_data["user_data"])
+				res.save()
+			print("[Thread.save_data] " + server.software) 
+			#print("[Thread.save_data] " + res.to_json())
 
-        matlab_data = data["MATLAB"] 
-        matlab = Dao.Matlab(date=now_date,time=now_time,\
-                        total=matlab_data["total"],\
-                        use=matlab_data["use"],\
-                        metadata=matlab_data["metadata"],\
-                        user_data=matlab_data["user_data"]\
-                        )
-        matlab.save()
-
+		'''
         ast_data = data["Audio_System_Toolbox"]
         ast = Dao.AudioSystemToolbox(date=now_date,time=now_time,\
                         total=ast_data["total"],\
@@ -78,7 +125,7 @@ def thread_to_save_data():
         nn.save()
 
         gt_data = data["GADS_Toolbox"]
-        gt = Dao.GadsToolbox(date=now_date,time=now_time,\
+        gt = Dao.GADSToolbox(date=now_date,time=now_time,\
                         total=gt_data["total"],\
                         use=gt_data["use"],\
                         metadata=gt_data["metadata"],\
@@ -87,7 +134,7 @@ def thread_to_save_data():
         gt.save()
 
         mt_data = data["MAP_Toolbox"]
-        mt = Dao.MapToolbox(date=now_date,time=now_time,\
+        mt = Dao.MAPToolbox(date=now_date,time=now_time,\
                         total=mt_data["total"],\
                         use=mt_data["use"],\
                         metadata=mt_data["metadata"],\
@@ -105,7 +152,7 @@ def thread_to_save_data():
         ot.save()
 
         rt_data = data["RF_Toolbox"]
-        rt = Dao.RfToolbox(date=now_date,time=now_time,\
+        rt = Dao.RFToolbox(date=now_date,time=now_time,\
                         total=rt_data["total"],\
                         use=rt_data["use"],\
                         metadata=rt_data["metadata"],\
@@ -148,9 +195,10 @@ def thread_to_save_data():
                         user_data=wt_data["user_data"]\
                         )
         wt.save()
-        print("Save Completed.")
-
-        time.sleep(minute_interval*60)
+		'''
+		now_time = Util.get_time()
+		print("[Thead.save_data] End: " + now_time)
+		time.sleep(minute_interval*60)
 
 def _main():
     print(cmd.lmstatAll())

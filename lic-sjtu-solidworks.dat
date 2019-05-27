@@ -1,0 +1,2 @@
+SERVER lic.si.sjtu.edu.cn 000C292A71EF 25734 
+DAEMON MLM "C:\Program Files\MATLAB\R2018b\etc\win64\mlm.exe" port=27001

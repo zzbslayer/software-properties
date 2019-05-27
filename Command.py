@@ -3,56 +3,116 @@ import os
 import Util
 
 BLANK = '\r\n'
-SERVER_HOST = "matlab2018b"
 
-def get_user_data(raw_user_data):
+def get_user_data(raw_user_data, software):
     user_data = []
     for i in raw_user_data:
-        split_user_data = i.split(' ')
-        for j in range(len(split_user_data)):
-            if (split_user_data[j].split('/')[0][1:] == SERVER_HOST):
-                break
-        server = split_user_data[j].split('/')
-        server_host = SERVER_HOST
-        port = server[1]
-        handle = split_user_data[j+1][:-2]
-        checkout_time = split_user_data[j+2] + ' ' + split_user_data[j+3] + ' ' + split_user_data[j+4] + ' ' + split_user_data[j+5][:-2]
-                    
-        one_user = { 
-            "server_host": server_host, \
-            "port": port, \
-            "handle": handle, \
-            "checkout_time": checkout_time
-            }
+        if software == "matlab":
+            one_user = get_matlab_user(i)
+        elif software == "solidworks":
+            one_user = get_solidworks_user(i)
         user_data.append(one_user)
     return user_data
+
+def get_matlab_user(line):
+    index = -6
+    split_user_data = line.split(' ')
+    #print(split_user_data[index])
+    server = split_user_data[index].split('/')
+    server_host = server[0][1:]
+    port = server[1]
+    handle = split_user_data[index+1][:-2]
+    checkout_time = split_user_data[index+2] + ' ' 
+    checkout_time += split_user_data[index+3] + ' '
+    checkout_time += split_user_data[index+4] + ' '
+    checkout_time += split_user_data[index+5][:-2]
+    version = split_user_data[-7]
+    user = ''
+    for i in split_user_data:
+        if i == version:
+            break
+        user += i
+        user += ' '
+                
+    one_user = { 
+        "user": user, \
+        "version": version, \
+        "server_host": server_host, \
+        "port": port, \
+        "handle": handle, \
+        "checkout_time": checkout_time
+    }
+    return one_user
+
+def get_solidworks_user(line):
+    split_user_data = line.split(' ')
+    checkout_time = split_user_data[-4] + ' '
+    checkout_time += split_user_data[-3] + ' '
+    checkout_time += split_user_data[-2] + ' '
+    checkout_time += split_user_data[-1] + ' '
+    version = split_user_data[-5][:-1]
+    user = ''
+    for i in split_user_data:
+        if i == version + ",":
+            break
+        user += i
+        user += ' '
+    one_user = {
+        "user": user, \
+        "version": version, \
+        "checkout_time": checkout_time
+    }
+    return one_user
+
 
 class Command(object):
     def __init__(self, path=None):
         if (path==None):
-            self.path = "C:\Program Files\MATLAB\R2018a\etc\win64"
+            self.path = "C:\\Program Files\\MATLAB\\R2018a\\etc\\win64"
         else:
             self.path = path
 
-        LM_LICENSE_FILE = os.environ.get('LM_LICENSE_FILE')
-        prefix = "\"" + self.path + "\lmutil.exe\" "
-
-        assert(LM_LICENSE_FILE != "")
-        #LM_LICENSE_FILE = "C:\Program Files\MATLAB\R2018a\etc\license.dat"
+        #DEFAULT_LM_LICENSE_FILE = os.environ.get('LM_LICENSE_FILE')
+        #DEFAUTL_LMUTIL_PREFIX = "\"C:\\Program Files\\MATLAB\\R2018a\\etc\\"
+        
+        lmutil = "\"" + self.path + "\\lmutil.exe\""
+        self.LM_LICENSE_FILE_PREFIX = os.getcwd()
             
         self.command_dic = {
-                        "lmstatAll":  lambda: prefix + "lmstat -a", \
-                        "lmstatByModule": lambda module: (prefix + "lmstat -f " + module), \
-                        "lmremoveByDevice": lambda feature,user,user_host,display:(prefix+"lmremove "+feature+" "+user+" "+user_host+" "+display), \
-                        "lmremoveByPort": lambda feature, server_host, port, handle:(prefix+"lmremove "+feature+" "+server_host+" "+port+" "+" "+handle), \
-                        "others": "dir"
+                        "lmstatAll":  lambda lic_file: lmutil + " lmstat -c " + lic_file + " -a", \
+                        "lmstatByModule": lambda lic_file, module: (lmutil + " lmstat -c " + lic_file +  "-f " + module), \
+                        "lmremoveByDevice": lambda feature,user,user_host,display:(lmutil+" lmremove "+feature+" "+user+" "+user_host+" "+display), \
+                        "lmremoveByPort": lambda feature, server_host, port, handle:(lmutil+" lmremove "+feature+" "+server_host+" "+port+" "+" "+handle), \
                     }
         
     def _command(self, key):
         return self.command_dic[key]
 
-    def lmstatByModule(self, module):
-        pipe = Popen(self._command("lmstatByModule")(module), shell=True, stdout=PIPE, stderr=PIPE)
+    def check(self, lic_file):
+        lic_file = "\"" + self.LM_LICENSE_FILE_PREFIX + "\\" + lic_file + "\""
+        pipe = Popen(self._command("lmstatAll")(lic_file), shell=True, stdout=PIPE, stderr=PIPE)
+        return self._check(pipe, lic_file)
+
+    def _check(self, pipe, lic_file):
+        print("[Command._check] License File: " + lic_file)
+        for i in range(8):
+            line = Util.readline(pipe)
+        if line == -1:
+            print("[Command._check] " + lic_file + " Server Error: EOF")
+            return -1
+        elif "license server UP" in line:
+            print("[Command._check] " + lic_file + " Server is RUNNING")
+            return 0
+        elif "lmgrd is not running" in line:
+            print("[Command._check] " + lic_file + " Server Error:" + line)
+            return -1
+
+    def lmstatByModule(self, lic_file, module, software):
+        lic_file = "\"" + self.LM_LICENSE_FILE_PREFIX + "\\" + lic_file + "\""
+        cmd = self._command("lmstatAll")(lic_file)
+        print("[Command] Execute: " + cmd)
+        pipe = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE)
+        status = self._check(pipe, lic_file)
         result = {}
         while True:
             line = Util.readline(pipe)
@@ -96,16 +156,20 @@ class Command(object):
                         if line == BLANK:
                             break
                         raw_user_data.append(line[4:])
-                    user_data = get_user_data(raw_user_data)
+                    user_data = get_user_data(raw_user_data, software)
                         
                     result[module]["user_data"] = user_data
                 else:
                     result[module]["user_data"] = []
                     result[module]["metadata"] = []
-        return result
+        return status, result
 
-    def lmstatAll(self):
-        pipe = Popen(self._command("lmstatAll")(), shell=True, stdout=PIPE, stderr=PIPE)
+    def lmstatAll(self, lic_file, software):
+        lic_file = "\"" + self.LM_LICENSE_FILE_PREFIX + "\\" + lic_file + "\""
+        cmd = self._command("lmstatAll")(lic_file)
+        print("[Command] Execute: " + cmd)
+        pipe = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE)
+        status = self._check(pipe, lic_file)
         result = {}
         while True:
             line = Util.readline(pipe)
@@ -150,12 +214,12 @@ class Command(object):
                             break
                         raw_user_data.append(line[4:])
 
-                    user_data = get_user_data(raw_user_data)
+                    user_data = get_user_data(raw_user_data, software)
                     result[module]["user_data"] = user_data
                 else:
                     result[module]["user_data"] = []
                     result[module]["metadata"] = []
-        return result
+        return status, result
 
     def lmremoveByDevice(self, feature, user,user_host, display):
         pipe = Popen(self._command("lmremoveByDevice")(feature, user, user_host, display), shell=True, stdout=PIPE, stderr=PIPE)
@@ -168,4 +232,4 @@ class Command(object):
 
 if __name__ == "__main__":
     cmd = Command()
-    print(cmd.lmstatByModule("SIMULINK"))
+    cmd.lmstatAll("lic-sjtu-localhost.dat")
