@@ -35,7 +35,7 @@ def thread_to_check_server_status():
 		servers = Dao.Server.objects()
 		for server in servers:
 			status = cmd.check(server.lic)
-			status_dic[server.id] = -1
+			status_dic[server.id] = status
 
 		time.sleep(minute_interval*15)
 		
@@ -55,26 +55,22 @@ def thread_to_save_data():
 			status, data = cmd.lmstatAll(server.lic, server.software)
 			status_dic[server.id] = status
 			
-			if status == -1:
+			if status != 0:
+                print("[Thread.save_data] Server status:" + str(status))
 				continue
-			if server.software == "matlab":
-				
-				matlab_data = data["MATLAB"]
-				res = Dao.Matlab(date=now_date,time=now_time,\
-							total=matlab_data["total"],\
-							use=matlab_data["use"],\
-							metadata=matlab_data["metadata"],\
-							user_data=matlab_data["user_data"]\
-							)
+
+			for module in data:
+				record_data = data[module]
+                res = Dao.History(server_id = server.id,\
+                    software=server.software,\
+                    module=module,\
+                    date=now_date,time=now_time,\
+					total=record_data["total"],\
+					use=record_data["use"],\
+					metadata=record_data["metadata"],\
+					user_data=record_data["user_data"])
 				res.save()
-			if server.software == "solidworks":
-				solidworks_data = data["solidworks"]
-				res = Dao.Solidworks(date=now_date,time=now_time,\
-							total=solidworks_data["total"],\
-							use=solidworks_data["use"],\
-							metadata=solidworks_data["metadata"],\
-							user_data=solidworks_data["user_data"])
-				res.save()
+
 			print("[Thread.save_data] " + server.software) 
 			#print("[Thread.save_data] " + res.to_json())
 

@@ -54,13 +54,18 @@ def get_servers():
     res = Dao.Server.objects()
     return res.to_json()
 
-@app.route("/history/<module>", methods=['GET'])
+@app.route("/history", methods=['GET'])
 def history_data(module):
-    if module == 'matlab':
-        date = request.args.get('date')
-        res = Dao.Matlab.objects(date=date)
-    else:
-        flask.abort(500)
+    server_id = request.args.get('server_id', type = int)
+    software = request.args.get('software', type = str)
+    module = request.args.get('module', type = str)
+    date = request.args.get('date', type = str)
+    res = Dao.History.objects(
+        server_id=server_id,
+        software=software,
+        module=module,
+        date=date
+    )
     return res.to_json()
 
 if __name__=="__main__":

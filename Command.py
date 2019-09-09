@@ -106,6 +106,9 @@ class Command(object):
         elif "lmgrd is not running" in line:
             print("[Command._check] " + lic_file + " Server Error:" + line)
             return -1
+        else:
+            print("[Command._check] " + lic_file + " Unexpected Error:" + line)
+            return -1
 
     def lmstatByModule(self, lic_file, module, software):
         lic_file = "\"" + self.LM_LICENSE_FILE_PREFIX + "\\" + lic_file + "\""
