@@ -3,6 +3,7 @@ from flask_cors import CORS
 import json
 import Service
 import Dao
+import os
 import _thread
 
 lic_file_content = lambda domain, port: ("SERVER " + domain \
@@ -12,9 +13,64 @@ lic_file_content = lambda domain, port: ("SERVER " + domain \
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
 
-@app.route("/realtime/<sid>", methods=['GET'])
-def realtime_data(sid):
+def get_sid():
+    # return os.environ['FLEXNET_SID']
+    return "5d81eadebbd7b22574004ee3"
+
+@app.route("/restart", methods=['GET'])
+def restart():
+    sid = get_sid()
+    Service.restart(sid)
+    return json.dumps(0)
+
+@app.route("/shutdown", methods=['GET'])
+def shutdown():
+    sid = get_sid()
+    Service.shutdown(sid)
+    return json.dumps(0)
+
+@app.route("/v2/realtime", methods=['GET'])
+def realtime_data_v2():
+    sid = get_sid()
     module = request.args.get('module')
+    if module:
+        re = Service.lmstatByModule(sid, module)
+    else:
+        re = Service.lmstatAll(sid)
+    return json.dumps(re)
+
+@app.route("/v2/history", methods=['GET'])
+def history_data_v2():
+    server_id = get_sid()
+    software = request.args.get('software', type = str)
+    module = request.args.get('module', type = str)
+    date = request.args.get('date', type = str)
+    res = Dao.History.objects(
+        server_id=server_id,
+        software=software,
+        module=module,
+        date=date
+    )
+    return res.to_json()
+
+@app.route("/v1/history", methods=['GET'])
+def history_data():
+    server_id = request.args.get('server_id', type = str)
+    software = request.args.get('software', type = str)
+    module = request.args.get('module', type = str)
+    date = request.args.get('date', type = str)
+    res = Dao.History.objects(
+        server_id=server_id,
+        software=software,
+        module=module,
+        date=date
+    )
+    return res.to_json()
+
+@app.route("/v1/realtime", methods=['GET'])
+def realtime_data():
+    sid = request.args.get('server_id', type=str)
+    module = request.args.get('module', type=str)
     if module:
         re = Service.lmstatByModule(sid, module)
     else:
@@ -23,14 +79,17 @@ def realtime_data(sid):
 
 @app.route("/server", methods=['POST'])
 def create_server():
-    server = Dao.Server(domain=request.json["domain"],\
-						port=request.json["port"],\
-						software=request.json["software"],\
-                        lic=request.json["lic"])
+    domain = request.json["domain"]
+    port = str(request.json["port"])
+    server = Dao.Server(domain=domain,
+						port=port,
+						software=request.json["software"],
+                        lmstat_lic=request.json["lmstat_lic"],
+                        lmgrd_lic=request.json["lmgrd_lic"])
     server.save()
 
-    lic_file = open(request.json["lic"], "w")
-    lic_file.write(lic_file_content(request.json["domain"], request.json["port"]))
+    lic_file = open(request.json["lmstat_lic"], "w")
+    lic_file.write(lic_file_content(domain, port))
     lic_file.close()
 
     return server.to_json()
@@ -52,20 +111,6 @@ def delete_server(sid):
 @app.route("/server", methods=['GET'])
 def get_servers():
     res = Dao.Server.objects()
-    return res.to_json()
-
-@app.route("/history", methods=['GET'])
-def history_data(module):
-    server_id = request.args.get('server_id', type = int)
-    software = request.args.get('software', type = str)
-    module = request.args.get('module', type = str)
-    date = request.args.get('date', type = str)
-    res = Dao.History.objects(
-        server_id=server_id,
-        software=software,
-        module=module,
-        date=date
-    )
     return res.to_json()
 
 if __name__=="__main__":

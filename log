@@ -1,0 +1,159 @@
+17:33:20 (lmgrd) -----------------------------------------------
+17:33:20 (lmgrd)   Please Note:
+17:33:20 (lmgrd) 
+17:33:20 (lmgrd)   This log is intended for debug purposes only.
+17:33:20 (lmgrd)   In order to capture accurate license
+17:33:20 (lmgrd)   usage data into an organized repository,
+17:33:20 (lmgrd)   please enable report logging. Use Flexera Software LLC's
+17:33:20 (lmgrd)   software license administration  solution,
+17:33:20 (lmgrd)   FlexNet Manager, to  readily gain visibility
+17:33:20 (lmgrd)   into license usage data and to create
+17:33:20 (lmgrd)   insightful reports on critical information like
+17:33:20 (lmgrd)   license availability and usage. FlexNet Manager
+17:33:20 (lmgrd)   can be fully automated to run these reports on
+17:33:20 (lmgrd)   schedule and can be used to track license
+17:33:20 (lmgrd)   servers and usage across a heterogeneous
+17:33:20 (lmgrd)   network of servers including Windows NT, Linux
+17:33:20 (lmgrd)   and UNIX.
+17:33:20 (lmgrd) 
+17:33:20 (lmgrd) -----------------------------------------------
+17:33:20 (lmgrd) 
+17:33:20 (lmgrd) 
+17:33:20 (lmgrd) Server's System Date and Time: Wed Sep 18 2019 17:33:20 中国标准时间
+17:33:20 (lmgrd) pid 12060
+17:33:20 (lmgrd) SLOG: Summary LOG statistics is enabled.
+17:33:20 (lmgrd) Done rereading
+17:33:20 (lmgrd) FlexNet Licensing (v11.14.1.2 build 208719 x64_n6) started on DESKTOP-UJF7I6J (IBM PC) (9/18/2019)
+17:33:20 (lmgrd) Copyright (c) 1988-2017 Flexera Software LLC. All Rights Reserved.
+17:33:20 (lmgrd) World Wide Web:  http://www.flexerasoftware.com
+17:33:20 (lmgrd) License file(s): C:\Program Files\MATLAB\R2018a\etc\license.dat
+17:33:20 (lmgrd) lmgrd tcp-port 27000
+17:33:20 (lmgrd) (@lmgrd-SLOG@) ===============================================
+17:33:20 (lmgrd) (@lmgrd-SLOG@) === LMGRD ===
+17:33:20 (lmgrd) (@lmgrd-SLOG@) Start-Date: Wed Sep 18 2019 17:33:20 中国标准时间
+17:33:20 (lmgrd) (@lmgrd-SLOG@) PID: 12060
+17:33:20 (lmgrd) (@lmgrd-SLOG@) LMGRD Version: v11.14.1.2 build 208719 x64_n6 ( build 208719 (ipv6))
+17:33:20 (lmgrd) (@lmgrd-SLOG@) 
+17:33:20 (lmgrd) (@lmgrd-SLOG@) === Network Info ===
+17:33:20 (lmgrd) (@lmgrd-SLOG@) Listening port: 27000
+17:33:20 (lmgrd) (@lmgrd-SLOG@) 
+17:33:20 (lmgrd) (@lmgrd-SLOG@) === Startup Info ===
+17:33:20 (lmgrd) (@lmgrd-SLOG@) Is LS run as a service: No
+17:33:20 (lmgrd) (@lmgrd-SLOG@) Server Configuration: Single Server
+17:33:20 (lmgrd) (@lmgrd-SLOG@) Command-line options used at LS startup: -c C:\Program Files\MATLAB\R2018a\etc\license.dat -L C:\test\log 
+17:33:20 (lmgrd) (@lmgrd-SLOG@) License file(s) used:  C:\Program Files\MATLAB\R2018a\etc\license.dat
+17:33:20 (lmgrd) (@lmgrd-SLOG@) ===============================================
+17:33:20 (lmgrd) SLOG: FNPLS-INTERNAL-VL1-4096
+17:33:20 (lmgrd) Starting vendor daemons ... 
+17:33:20 (lmgrd) Started MLM (pid 10296)
+17:33:20 (MLM) SLOG: Summary LOG statistics is enabled.
+17:33:20 (MLM) SLOG: FNPLS-INTERNAL-CKPT1
+17:33:20 (MLM) SLOG: VM Status: 0
+17:33:20 (MLM) EXPIRED: MATLAB
+17:33:20 (MLM) EXPIRED: SIMULINK
+17:33:20 (MLM) EXPIRED: PolySpace_Bug_Finder
+17:33:20 (MLM) EXPIRED: PolySpace_Bug_Finder_Engine
+17:33:20 (MLM) EXPIRED: MATLAB_5G_Toolbox
+17:33:20 (MLM) EXPIRED: Aerospace_Blockset
+17:33:20 (MLM) EXPIRED: Aerospace_Toolbox
+17:33:20 (MLM) EXPIRED: Antenna_Toolbox
+17:33:20 (MLM) EXPIRED: Audio_System_Toolbox
+17:33:20 (MLM) EXPIRED: Automated_Driving_Toolbox
+17:33:20 (MLM) EXPIRED: Bioinformatics_Toolbox
+17:33:20 (MLM) EXPIRED: Communication_Toolbox
+17:33:20 (MLM) EXPIRED: Video_and_Image_Blockset
+17:33:20 (MLM) EXPIRED: Control_Toolbox
+17:33:20 (MLM) EXPIRED: Curve_Fitting_Toolbox
+17:33:20 (MLM) EXPIRED: Signal_Blocks
+17:33:20 (MLM) EXPIRED: Data_Acq_Toolbox
+17:33:20 (MLM) EXPIRED: Database_Toolbox
+17:33:20 (MLM) EXPIRED: Datafeed_Toolbox
+17:33:20 (MLM) EXPIRED: Neural_Network_Toolbox
+17:33:20 (MLM) EXPIRED: Econometrics_Toolbox
+17:33:20 (MLM) EXPIRED: RTW_Embedded_Coder
+17:33:20 (MLM) EXPIRED: Filter_Design_HDL_Coder
+17:33:20 (MLM) EXPIRED: Fin_Instruments_Toolbox
+17:33:20 (MLM) EXPIRED: Financial_Toolbox
+17:33:20 (MLM) EXPIRED: Fixed_Point_Toolbox
+17:33:20 (MLM) EXPIRED: Fuzzy_Toolbox
+17:33:20 (MLM) EXPIRED: GPU_Coder
+17:33:20 (MLM) EXPIRED: GADS_Toolbox
+17:33:20 (MLM) EXPIRED: Simulink_HDL_Coder
+17:33:20 (MLM) EXPIRED: EDA_Simulator_Link
+17:33:20 (MLM) EXPIRED: Image_Acquisition_Toolbox
+17:33:20 (MLM) EXPIRED: Image_Toolbox
+17:33:20 (MLM) EXPIRED: Instr_Control_Toolbox
+17:33:20 (MLM) EXPIRED: LTE_HDL_Toolbox
+17:33:20 (MLM) EXPIRED: LTE_Toolbox
+17:33:20 (MLM) EXPIRED: MATLAB_Coder
+17:33:20 (MLM) EXPIRED: MATLAB_Builder_for_Java
+17:33:20 (MLM) EXPIRED: Compiler
+17:33:20 (MLM) EXPIRED: MATLAB_Report_Gen
+17:33:20 (MLM) EXPIRED: MAP_Toolbox
+17:33:20 (MLM) EXPIRED: MPC_Toolbox
+17:33:20 (MLM) EXPIRED: MBC_Toolbox
+17:33:20 (MLM) EXPIRED: OPC_Toolbox
+17:33:20 (MLM) EXPIRED: Optimization_Toolbox
+17:33:20 (MLM) EXPIRED: Distrib_Computing_Toolbox
+17:33:20 (MLM) EXPIRED: PDE_Toolbox
+17:33:20 (MLM) EXPIRED: Phased_Array_System_Toolbox
+17:33:20 (MLM) EXPIRED: PolySpace_Server_C_CPP
+17:33:20 (MLM) EXPIRED: Powertrain_Blockset
+17:33:20 (MLM) EXPIRED: Pred_Maintenance_Toolbox
+17:33:20 (MLM) EXPIRED: RF_Blockset
+17:33:20 (MLM) EXPIRED: RF_Toolbox
+17:33:20 (MLM) EXPIRED: Risk_Management_Toolbox
+17:33:20 (MLM) EXPIRED: Robotics_System_Toolbox
+17:33:20 (MLM) EXPIRED: Robust_Toolbox
+17:33:20 (MLM) EXPIRED: Sensor_Fusion_and_Tracking
+17:33:20 (MLM) EXPIRED: Signal_Toolbox
+17:33:20 (MLM) EXPIRED: SimBiology
+17:33:20 (MLM) EXPIRED: SimEvents
+17:33:20 (MLM) EXPIRED: SimDriveline
+17:33:20 (MLM) EXPIRED: Power_System_Blocks
+17:33:20 (MLM) EXPIRED: SimHydraulics
+17:33:20 (MLM) EXPIRED: SimMechanics
+17:33:20 (MLM) EXPIRED: Simscape
+17:33:20 (MLM) EXPIRED: Virtual_Reality_Toolbox
+17:33:20 (MLM) EXPIRED: SL_Verification_Validation
+17:33:20 (MLM) EXPIRED: Simulink_Code_Inspector
+17:33:20 (MLM) EXPIRED: Real-Time_Workshop
+17:33:20 (MLM) EXPIRED: Simulink_Control_Design
+17:33:20 (MLM) EXPIRED: Simulink_Coverage
+17:33:20 (MLM) EXPIRED: Simulink_Design_Optim
+17:33:20 (MLM) EXPIRED: Simulink_Design_Verifier
+17:33:20 (MLM) EXPIRED: Real-Time_Win_Target
+17:33:20 (MLM) EXPIRED: Simulink_PLC_Coder
+17:33:20 (MLM) EXPIRED: XPC_Target
+17:33:20 (MLM) EXPIRED: SIMULINK_Report_Gen
+17:33:20 (MLM) EXPIRED: Simulink_Requirements
+17:33:20 (MLM) EXPIRED: Simulink_Test
+17:33:20 (MLM) EXPIRED: Excel_Link
+17:33:20 (MLM) EXPIRED: Stateflow
+17:33:20 (MLM) EXPIRED: Statistics_Toolbox
+17:33:20 (MLM) EXPIRED: Symbolic_Toolbox
+17:33:20 (MLM) EXPIRED: Identification_Toolbox
+17:33:20 (MLM) EXPIRED: Text_Analytics_Toolbox
+17:33:20 (MLM) EXPIRED: Trading_Toolbox
+17:33:20 (MLM) EXPIRED: Vehicle_Dynamics_Blockset
+17:33:20 (MLM) EXPIRED: Vehicle_Network_Toolbox
+17:33:20 (MLM) EXPIRED: Vision_HDL_Toolbox
+17:33:20 (MLM) EXPIRED: WLAN_System_Toolbox
+17:33:20 (MLM) EXPIRED: Wavelet_Toolbox
+17:33:20 (MLM) License server system started on DESKTOP-UJF7I6J
+17:33:20 (MLM) No features to serve, exiting
+17:33:20 (MLM) EXITING DUE TO SIGNAL 27 Exit reason 4
+17:33:25 (lmgrd) MLM exited with status 27 (No features to serve)
+17:33:25 (lmgrd) MLM daemon found no features.  Please correct
+17:33:25 (lmgrd) license file and re-start daemons.
+17:33:25 (lmgrd) 
+17:33:25 (lmgrd) This may be due to the fact that you are using
+17:33:25 (lmgrd) a different license file from the one you expect.
+17:33:25 (lmgrd) Check to make sure that:
+17:33:25 (lmgrd) C:\Program Files\MATLAB\R2018a\etc\license.dat 
+17:33:25 (lmgrd) is the license file you want to use.
+17:33:25 (lmgrd) 
+17:35:27 (lmgrd) SHUTDOWN request from admin at node DESKTOP-UJF7I6J
+17:35:27 (lmgrd) lmgrd will now shut down all the vendor daemons
+
+17:35:27 (lmgrd) EXITING DUE TO SIGNAL 15

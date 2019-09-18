@@ -75,14 +75,19 @@ class Command(object):
         #DEFAULT_LM_LICENSE_FILE = os.environ.get('LM_LICENSE_FILE')
         #DEFAUTL_LMUTIL_PREFIX = "\"C:\\Program Files\\MATLAB\\R2018a\\etc\\"
         
-        lmutil = "\"" + self.path + "\\lmutil.exe\""
+        executable = lambda name: "\"{}\\{}.exe\"".format(self.path, name)
+
+        lmutil = executable("lmutil")
+        lmgrd = executable("lmgrd")
         self.LM_LICENSE_FILE_PREFIX = os.getcwd()
             
         self.command_dic = {
-                        "lmstatAll":  lambda lic_file: lmutil + " lmstat -c " + lic_file + " -a", \
-                        "lmstatByModule": lambda lic_file, module: (lmutil + " lmstat -c " + lic_file +  "-f " + module), \
-                        "lmremoveByDevice": lambda feature,user,user_host,display:(lmutil+" lmremove "+feature+" "+user+" "+user_host+" "+display), \
-                        "lmremoveByPort": lambda feature, server_host, port, handle:(lmutil+" lmremove "+feature+" "+server_host+" "+port+" "+" "+handle), \
+                        "lmstatAll":  lambda lic_file: "{} lmstat -c {} -a".format(lmutil, lic_file),
+                        "lmstatByModule": lambda lic_file, module: "{} lmstat -c {} -f {}".format(lmutil, lic_file, module),
+                        "start": lambda lmgrd_lic: "{} -c {}".format(lmgrd, lmgrd_lic),
+                        "shutdown": lambda lmgrd_lic: "echo y | {} lmdown -c {}".format(lmutil, lmgrd_lic),
+                        "lmremoveByDevice": lambda feature,user,user_host,display:(lmutil+" lmremove "+feature+" "+user+" "+user_host+" "+display),
+                        "lmremoveByPort": lambda feature, server_host, port, handle:(lmutil+" lmremove "+feature+" "+server_host+" "+port+" "+" "+handle),
                     }
         
     def _command(self, key):
@@ -110,8 +115,19 @@ class Command(object):
             print("[Command._check] " + lic_file + " Unexpected Error:" + line)
             return -1
 
+    def start(self, lmgrd_lic):
+        cmd = self._command("start")(lmgrd_lic)
+        print("[Command] Execute: " + cmd)
+        pipe = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE)
+
+    def shutdown(self, lmgrd_lic):
+        cmd = self._command("shutdown")(lmgrd_lic)
+        print("[Command] Execute: " + cmd)
+        pipe = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE)
+
+
     def lmstatByModule(self, lic_file, module, software):
-        lic_file = "\"" + self.LM_LICENSE_FILE_PREFIX + "\\" + lic_file + "\""
+        lic_file = "\"{}\\{}\"".format(self.LM_LICENSE_FILE_PREFIX, lic_file)
         cmd = self._command("lmstatAll")(lic_file)
         print("[Command] Execute: " + cmd)
         pipe = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE)
