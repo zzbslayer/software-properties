@@ -4,6 +4,7 @@ import Util
 import json
 import Dao
 import time
+import requests
 
 minute_interval = 60
 cmd = Command()
@@ -31,23 +32,37 @@ def lmstatByModule(sid, module):
 	return res
 
 def start(sid):
-	server = Dao.Server.objects(id= sid)[0]
-	lmgrd_lic = server.lmgrd_lic
-
-	cmd.start(lmgrd_lic)
+	res = requests.get(getPath(sid)+"/start")
+	return res
 
 def shutdown(sid):
-	server = Dao.Server.objects(id= sid)[0]
-	lmgrd_lic = server.lmgrd_lic
-
-	cmd.shutdown(lmgrd_lic)
+	res = requests.get(getPath(sid)+"/shutdown")
+	return res
 
 def restart(sid):
-	server = Dao.Server.objects(id= sid)[0]
-	lmgrd_lic = server.lmgrd_lic
+	res = requests.get(getPath(sid)+"/restart")
+	return res
 
-	cmd.shutdown(lmgrd_lic)
-	cmd.start(lmgrd_lic)
+def init_server(domain, flex_port, web_port, software, lmstat_lic, lmgrd_lic):
+	path = "http://" + domain + ":" + web_port
+	payload = {"domain":domain, "flex_port":flex_port,"software":software,"lmstat_lic":lmstat_lic,"lmgrd_lic":lmgrd_lic}
+	res = requests.post(path+"/server", params=payload)
+	return res
+
+def getHistory(server_id, software, module, date):
+	payload = {"server_id":server_id, "software":software,"module":module,"date":date}
+	res = requests.get(getPath(server_id)+"/history", params=payload)
+	return res
+
+def getRealtime(sid, module):
+	payload = {"sid":sid, "module":module}
+	res = requests.get(getPath(sid)+"/realtime", params=payload)
+	return res
+
+def getRealtime(sid):
+	payload = {"sid":sid}
+	res = requests.get(getPath(sid)+"/realtime", params=payload)
+	return res
 
 def thread_to_check_server_status():
 	while(True):
@@ -55,46 +70,16 @@ def thread_to_check_server_status():
 		for server in servers:
 			status = cmd.check(server.lmstat_lic)
 			status_dic[server.id] = status
-
+			# restart the server once status was wrong
 		time.sleep(minute_interval*15)
-		
+
+def getPath(sid):
+	server = Dao.Server.objects(id= sid)[0]
+	path = "http://" + server.domain +":"+ server.port
+	return path
+
 def get_status_by_id(sid):
 	return status_dic.get(sid)
-
-
-def thread_to_save_data():
-	while(True):
-		now_time = Util.get_time()
-		print("[Thread.save_data] Start: " + now_time)
-		servers = Dao.Server.objects()
-		for server in servers:
-			now_time = Util.get_time()
-			now_date = Util.get_date()
-			print("[Thread.save_data] " + now_date + " " + now_time + " " + server.lmstat_lic)
-			status, data = cmd.lmstatAll(server.lmstat_lic, server.software)
-			status_dic[server.id] = status
-			if status:
-				print("[Tread.save_data] Server status:"+str(status))
-				continue
-			for module in data:
-				record_data = data[module]
-				res = Dao.History(
-					server_id=str(server.id),
-					software=server.software,
-					module=module,
-					date=now_date,time=now_time,
-			        total=record_data["total"],
-					use=record_data["use"],
-					metadata=record_data["metadata"],
-					user_data=record_data["user_data"]
-					)
-				res.save()
-			print("[Thread.save_data] " + server.software) 
-			#print("[Thread.save_data] " + res.to_json())
-		now_time = Util.get_time()
-		print("[Thead.save_data] End: " + now_time)
-		time.sleep(minute_interval*60)
-		print('\n')
 
 def _main():
     print(cmd.lmstatAll())
