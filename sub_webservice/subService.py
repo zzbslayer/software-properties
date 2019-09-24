@@ -2,7 +2,7 @@ import os
 from Command import Command
 import Util
 import json
-import Dao
+import subDao
 import time
 
 minute_interval = 60
@@ -13,7 +13,7 @@ cmd = Command()
 status_dic = {}
 
 def lmstatAll(sid):
-	server = Dao.Server.objects(id= sid)[0]
+	server = subDao.Server.objects(id= sid)[0]
 	lic_file = server.lmstat_lic
 	software = server.software
 
@@ -22,7 +22,7 @@ def lmstatAll(sid):
 	return res
 
 def lmstatByModule(sid, module):
-	server = Dao.Server.objects(id= sid)[0]
+	server = subDao.Server.objects(id= sid)[0]
 	lic_file = server.lmstat_lic
 	software = server.software
 
@@ -31,19 +31,19 @@ def lmstatByModule(sid, module):
 	return res
 
 def start(sid):
-	server = Dao.Server.objects(id= sid)[0]
+	server = subDao.Server.objects(id= sid)[0]
 	lmgrd_lic = server.lmgrd_lic
 
 	cmd.start(lmgrd_lic)
 
 def shutdown(sid):
-	server = Dao.Server.objects(id= sid)[0]
+	server = subDao.Server.objects(id= sid)[0]
 	lmgrd_lic = server.lmgrd_lic
 
 	cmd.shutdown(lmgrd_lic)
 
 def restart(sid):
-	server = Dao.Server.objects(id= sid)[0]
+	server = subDao.Server.objects(id= sid)[0]
 	lmgrd_lic = server.lmgrd_lic
 
 	cmd.shutdown(lmgrd_lic)
@@ -51,11 +51,13 @@ def restart(sid):
 
 def thread_to_check_server_status():
 	while(True):
-		servers = Dao.Server.objects()
+		servers = subDao.Server.objects()
 		for server in servers:
 			status = cmd.check(server.lmstat_lic)
 			status_dic[server.id] = status
-
+			# restart the server once status was wrong
+			if (status == 1):
+				restart(Util.get_sid())
 		time.sleep(minute_interval*15)
 		
 def get_status_by_id(sid):
@@ -65,7 +67,7 @@ def thread_to_save_data():
 	while(True):
 		now_time = Util.get_time()
 		print("[Thread.save_data] Start: " + now_time)
-		servers = Dao.Server.objects()
+		servers = subDao.Server.objects()
 		for server in servers:
 			now_time = Util.get_time()
 			now_date = Util.get_date()
@@ -77,7 +79,7 @@ def thread_to_save_data():
 				continue
 			for module in data:
 				record_data = data[module]
-				res = Dao.History(
+				res = subDao.History(
 					server_id=str(server.id),
 					software=server.software,
 					module=module,
