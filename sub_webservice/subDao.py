@@ -1,7 +1,7 @@
 from mongoengine import Document, connect, StringField, IntField, ListField
 import Util
 
-db_db = "sjtu"
+db_db = "sjtu_distribute"
 db_host = "localhost"
 connect(db=db_db, host=db_host)
 
@@ -20,7 +20,7 @@ class Server(Document):
     lmgrd_lic = StringField(required=True)
 
 class History(Document):
-    server_id = IntField(required=True)
+    server_id = StringField(required=True)
     software = StringField(required=True)
     module = StringField(required=True)
     date = StringField(required=True)

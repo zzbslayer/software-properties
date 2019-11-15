@@ -47,7 +47,7 @@ def history_data():
     module = request.args.get('module', type = str)
     date = request.args.get('date', type = str)
     res = Service.getHistory(server_id, software, module, date)
-    return res.to_json()
+    return json.dumps(res)
 
 @app.route("/realtime", methods=['GET'])
 def realtime_data():
@@ -60,7 +60,7 @@ def realtime_data():
     return json.dumps(re)
 
 @app.route("/start", methods=['GET'])
-def restart():
+def start():
     sid = request.args.get('server_id', type=str)
     Service.start(sid)
     return json.dumps(0)
@@ -78,4 +78,4 @@ def shutdown():
     return json.dumps(0)
 
 if __name__=="__main__":
-    app.run()
+    app.run("0.0.0.0")

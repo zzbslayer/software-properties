@@ -17,7 +17,6 @@ lic_file_content = lambda domain, port: ("SERVER " + domain \
 def init_server():
     domain = request.json["domain"]
     flex_port = str(request.json["flex_port"])
-    web_port = str(request.json["web_port"])
     server = subDao.Server(domain=domain,
 						flex_port=flex_port,
 						software=request.json["software"],
@@ -30,7 +29,7 @@ def init_server():
     lic_file.close()
 
 @app.route("/start", methods=['GET'])
-def restart():
+def start():
     sid = Util.get_sid()
     subService.start(sid)
     return json.dumps(0)
@@ -74,4 +73,4 @@ def history_data_v2():
 if __name__=="__main__":
     _thread.start_new_thread(subService.thread_to_check_server_status, ())
     _thread.start_new_thread(subService.thread_to_save_data, ())
-    app.run()
+    app.run(port=6000)

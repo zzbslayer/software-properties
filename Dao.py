@@ -1,7 +1,7 @@
 from mongoengine import Document, connect, StringField, IntField, ListField
 import Util
 
-db_db = "sjtu_2"
+db_db = "sjtu_center"
 db_host = "localhost"
 connect(db=db_db, host=db_host)
 
